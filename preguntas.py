@@ -6,7 +6,6 @@ El archivo `amazon_cells_labelled.txt` contiene una serie de comentarios sobre p
 de la tienda de amazon, los cuales están etiquetados como positivos (=1) o negativos (=0)
 o indterminados (=NULL). En este taller se construirá un modelo de clasificación usando
 Naive Bayes para determinar el sentimiento de un comentario.
-
 """
 import numpy as np
 import pandas as pd
@@ -21,7 +20,7 @@ def pregunta_01():
     # Lea el archivo `amazon_cells_labelled.tsv` y cree un DataFrame usando pandas.
     # Etiquete la primera columna como `msg` y la segunda como `lbl`. Esta función
     # retorna el dataframe con las dos columnas.
-    df = ____(
+    df =pd.read_csv(
         ____,
         sep=____,
         header=____,
