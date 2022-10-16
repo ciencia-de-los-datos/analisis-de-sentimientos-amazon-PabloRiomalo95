@@ -9,7 +9,10 @@ Naive Bayes para determinar el sentimiento de un comentario.
 """
 import numpy as np
 import pandas as pd
-
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.metrics import confusion_matrix
 
 def pregunta_01():
     """
@@ -20,22 +23,16 @@ def pregunta_01():
     # Lea el archivo `amazon_cells_labelled.tsv` y cree un DataFrame usando pandas.
     # Etiquete la primera columna como `msg` y la segunda como `lbl`. Esta función
     # retorna el dataframe con las dos columnas.
-    df =pd.read_csv(
-        ____,
-        sep=____,
-        header=____,
-        names=____,
-    )
-
-    # Separe los grupos de mensajes etiquetados y no etiquetados.
-    df_tagged = ____[____["____"].____()]
-    df_untagged = ____[____["____"].____()]
-
-    x_tagged = ____["____"]
-    y_tagged = ____["____"]
-
-    x_untagged = ____["____"]
-    y_untagged = ____["____"]
+    df =pd.read_csv('amazon_cells_labelled.tsv',sep='\t',header=None,names=['msg','lbl'])
+    
+    df_tagged = df[(df['lbl']>=0)]
+    df_untagged = df[(df['lbl'].isna())]
+    
+    x_tagged = df_tagged['msg']
+    y_tagged = df_tagged['lbl']
+    
+    x_untagged = df_untagged['msg']
+    y_untagged = df_untagged['lbl']
 
     # Retorne los grupos de mensajes
     return x_tagged, y_tagged, x_untagged, y_untagged
@@ -46,21 +43,13 @@ def pregunta_02():
     Preparación de los conjuntos de datos.
     -------------------------------------------------------------------------------------
     """
-
-    # Importe train_test_split
-    from ____ import ____
-
+    from sklearn.model_selection import train_test_split
     # Cargue los datos generados en la pregunta 01.
-    x_tagged, y_tagged, _, _ = pregunta_01()
+    x_tagged, y_tagged, x_untagged, y_untagged = pregunta_01()
 
-    # Divida los datos de entrenamiento y prueba. La semilla del generador de números
+    # Divida los datos de entrenamiento y prueba. La semilla del generador de nÃºmeros
     # aleatorios es 12345. Use el 10% de patrones para la muestra de prueba.
-    x_train, x_test, y_train, y_test = train_test_split(
-        ____,
-        ____,
-        test_size=____,
-        random_state=____,
-    )
+    x_train, x_test, y_train, y_test = train_test_split(x_tagged,y_tagged,test_size=0.1,random_state=12345)
 
     # Retorne `X_train`, `X_test`, `y_train` y `y_test`
     return x_train, x_test, y_train, y_test
@@ -72,14 +61,16 @@ def pregunta_03():
     -------------------------------------------------------------------------------------
     """
     # Importe el stemmer de Porter
+    from nltk.stem.porter import PorterStemmer
     # Importe CountVectorizer
-    from ____ import ____
+    from sklearn.feature_extraction.text import CountVectorizer
 
     # Cree un stemeer que use el algoritmo de Porter.
-    stemmer = ____
-
+    stemmer = PorterStemmer()
+    vectorizer= CountVectorizer(analyzer='word',token_pattern=r'(?u)\b[a-zA-Z][a-zA-Z]+\b',lowercase=True)
+    
     # Cree una instancia del analizador de palabras (build_analyzer)
-    analyzer = ____().____()
+    analyzer=vectorizer.build_analyzer()
 
     # Retorne el analizador de palabras
     return lambda x: (stemmer.stem(w) for w in analyzer(x))
