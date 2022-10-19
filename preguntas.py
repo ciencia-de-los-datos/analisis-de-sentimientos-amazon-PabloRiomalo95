@@ -9,10 +9,8 @@ Naive Bayes para determinar el sentimiento de un comentario.
 """
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import GridSearchCV
-from sklearn.pipeline import Pipeline
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.metrics import confusion_matrix
+
+
 
 def pregunta_01():
     """
